@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Server</title>
+    <link rel="stylesheet" href="test.css" />
+    <script
+      src="https://cdn.socket.io/4.7.5/socket.io.min.js"
+      integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.5.3/mqtt.min.js"
+      integrity="sha512-71d0OA/E6oleMIS0w2uEqGmgFR9Bzh0aiDK2PyIKd/Scot/6ENVrwyz3cpkxscd+KqoLw2DIlnaefocolXM4rA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script>
+      const socket = io("localhost:3001");
+
+      socket.on("sensorData", function (sensorData) {
+        document.getElementById("temperatureWindow").textContent =
+          sensorData.Temp + "oC";
+
+        document.getElementById("humidityWindow").textContent =
+          sensorData.Humi + "%";
+
+        document.getElementById("soilMoistureWindow").textContent =
+          sensorData.Soil;
+      });
+    </script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="row">
+        <div class="temp__wrapper">
+          <div class="temp__key">Nhiệt độ</div>
+          <!-- Thay thế số cố định bằng khung cửa sổ nhỏ -->
+          <div class="temp__value big__font" id="temperature">
+            <span class="data-window" id="temperatureWindow">27</span>
+          </div>
+        </div>
+        <div class="humid__wrapper">
+          <div class="humid__key">Độ ẩm</div>
+          <div class="humid__value big__font" id="humidity">
+            <span class="data-window" id="humidityWindow">90</span>
+          </div>
+        </div>
+        <div class="land_humid__wrapper">
+          <div class="land_humid__key">Độ ẩm đất</div>
+          <div class="land_humid__value big__font" id="soil-moisture">
+            <span class="data-window" id="soilMoistureWindow">28</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="control__wrapper" id="autoControl">
+          <div class="control__key">Chế độ hoạt động</div>
+          <div>
+            <div>Tự động</div>
+            <div>
+              <h4 class="a">Tắt</h4>
+              <label class="switch">
+                <input placeholder="abc" type="checkbox" id="switch1" />
+                <span class="slider round"></span>
+              </label>
+              <h4 class="a">Bật</h4>
+            </div>
+          </div>
+          <div>
+            <div>Tự điều khiển</div>
+            <h4 class="a">Tắt</h4>
+            <label class="switch">
+              <input placeholder="abc" type="checkbox" id="switch2" />
+              <span class="slider round"></span>
+            </label>
+            <h4 class="a">Bật</h4>
+          </div>
+          <div>
+            <div>Hẹn Giờ</div>
+            <h4 class="a">Tắt</h4>
+            <label class="switch">
+              <input placeholder="abc" type="checkbox" id="switch3" />
+              <span class="slider round"></span>
+            </label>
+            <h4 class="a">Bật</h4>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="humid_turn_off__wrapper">
+          <div class="humid_turn_off__key">Nhiệt độ bơm tưới</div>
+          <div class="slide__wrapper">
+            <div class="temp_turn_off__value">27</div>
+            <div class="slide">
+              <input
+                placeholder="abc"
+                type="range"
+                min="1"
+                max="100"
+                value="27"
+                id="temp_slide"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="humid_turn_on__wrapper">
+          <div class="humid_turn_on__key">Độ ẩm bơm tưới</div>
+          <div class="slide__wrapper">
+            <div class="humid_turn_on__value">90%</div>
+            <div class="slide">
+              <input
+                placeholder="abc"
+                type="range"
+                min="1"
+                max="100"
+                value="50"
+                id="turn_on_slide"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="humid_turn_off__wrapper">
+          <div class="humid_turn_off__key">Độ ẩm đất bơm tưới</div>
+          <div class="slide__wrapper">
+            <div class="humid_turn_off__value">9</div>
+            <div class="slide">
+              <input
+                placeholder="abc"
+                type="range"
+                min="1"
+                max="100"
+                value="1"
+                id="turn_off_slide"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="timer__wrapper">
+          <p class="fw-bold text-center">Hẹn giờ</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="timer__wrapper">
+          <div class="col-md-6 offset-md-3">
+            <div class="input-group mb-3 text-center">
+              <input
+                id="hour1"
+                type="number"
+                class="form-control timer__input"
+                placeholder="Giờ"
+                min="0"
+                max="23"
+              />
+              <span class="input-group-text">:</span>
+              <input
+                id="minute1"
+                type="number"
+                class="form-control timer__input"
+                placeholder="Phút"
+                min="0"
+                max="59"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    let isAuto = true;
+    const tempslide = document.getElementById("temp_slide");
+    const tempValue = document.querySelector(".temp_turn_off__value");
+
+    const humidSlide = document.getElementById("turn_on_slide");
+    const humidValue = document.querySelector(".humid_turn_on__value");
+
+    const soilSlide = document.getElementById("turn_off_slide");
+    const soilValue = document.querySelector(".humid_turn_off__value");
+
+    tempslide.onchange = () => {
+      tempValue.textContent = `${tempslide.value}oC`;
+    };
+
+    humidSlide.onchange = () => {
+      humidValue.textContent = `${humidSlide.value}%`;
+    };
+
+    soilSlide.onchange = () => {
+      soilValue.textContent = `${soilSlide.value}`;
+    };
+  </script>
+  <script async src="./index.js"></script>
+</html>
